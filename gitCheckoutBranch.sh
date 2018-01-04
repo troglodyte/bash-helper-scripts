@@ -1,16 +1,28 @@
 #!/bin/bash
+
 echo "Ticket number?"
 read ticket_number
+
 title=$@
+
 suffix=`echo $@ | awk '{print tolower($0)}'`
-# trim extra dashes
-suffix=${suffix//-/}
+
+# Filter out unwanted strings 
+suffix=${suffix//[\!,.-@?.\/]/}
+
 # trim extra spaces
 suffix=`echo $suffix | tr -s " "`
-echo "$suffix"
+
+# Extract substring
+suffix=${suffix:0:45}
+
+# Strip trailing space
+suffix="$(echo -e "${suffix}" | sed -e 's/[[:space:]]*$//')"
+
 # replace spaces with dashes
-suffix=${suffix// /-}
+suffix=${suffix// /-} 
+
 ticket_number=`echo $ticket_number | awk '{print tolower($0)}'`
-echo "$ticket_number"
-branch_name="ticket-$ticket_number-troglodyte-$suffix"
+branch_name="ticket-$ticket_number-your_username_here-$suffix"
+
 git checkout -b $branch_name

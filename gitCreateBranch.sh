@@ -1,21 +1,33 @@
 #!/bin/bash
 
-echo "Ticket number?"
-read ticket_number
+# Git create branch
+function gcb {
+    echo "Ticket number?"
+    read ticket_number
 
-title=$@
-suffix=`echo $@ | awk '{print tolower($0)}'`
+    title=$@
 
-# Filter out unwanted strings 
-suffix=${suffix//[\!,.-@?.\/]/}
+    suffix=`echo $@ | awk '{print tolower($0)}'`
 
-# trim extra spaces
-suffix=`echo $suffix | tr -s " "`
+    # Filter out unwanted strings
+    suffix=${suffix//[\!,.-@?.\/]/}
 
-# replace spaces with dashes
-suffix=${suffix// /-} 
+    # trim extra spaces
+    suffix=`echo $suffix | tr -s " "`
 
-ticket_number=`echo $ticket_number | awk '{print tolower($0)}'`
-branch_name="ticket-$ticket_number-mharris-$suffix"
+    # Extract substring
+    suffix=${suffix:0:45}
 
-git checkout -b $branch_name
+    # Strip trailing space
+    suffix="$(echo -e "${suffix}" | sed -e 's/[[:space:]]*$//')"
+
+    # replace spaces with dashes
+    suffix=${suffix// /-}
+
+    ticket_number=`echo $ticket_number | awk '{print tolower($0)}'`
+    # branch_name="ADM-$ticket_number-$USER-$suffix" # with user name
+    branch_name="MINT-$ticket_number-$suffix"
+
+    git checkout -b "feature/$branch_name"
+    # git flow feature start $branch_name # via git flow
+}
